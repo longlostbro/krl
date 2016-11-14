@@ -8,6 +8,7 @@
 							  logging on
 							  sharing on
 							  provides hello
+							  sharing on
 							  provides users
 
 							  }
