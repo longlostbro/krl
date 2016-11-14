@@ -23,7 +23,10 @@ My first ruleset
       something = "Hello World";
   }
   rule message {
-    select when echo message input "(.*)" setting(m)
+    select when echo message
+	pre{
+		m = event:attr("input")
+	}
     send_directive("say") with
       something = m;
   }
