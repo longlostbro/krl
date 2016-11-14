@@ -11,7 +11,7 @@ track_trips
   global {
  
   }
-  rule message {
+  rule process_trip {
     select when echo message
 	pre{
 		m = event:attr("mileage")
