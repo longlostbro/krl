@@ -4,7 +4,7 @@
     description <<
         A first ruleset for the Quickstart
                           >>
-                              author "Phil Windley"
+                              author "David Taylor"
 							  logging on
 							  sharing on
 							  provides hello
@@ -55,7 +55,7 @@
 							  }
 							  if(not user_id.isnull() ) then {
 								  send_directive("say") with
-									something = "Hello #{name}";
+									something = <<"Hello #{name}">> ;
 							  }
 							  fired {
 								  log "LOG  says hello to " + name ;
