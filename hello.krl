@@ -8,7 +8,7 @@
 							  logging on
 							  sharing on
 							  provides hello
-							  provides user
+							  provides users
 
 							  }
 							  global {
