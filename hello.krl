@@ -55,7 +55,7 @@
 							  }
 							  if(not user_id.isnull() ) then {
 								  send_directive("say") with
-									something = <<"Hello #{name}">> ;
+									something = "Hello #{name}";
 							  }
 							  fired {
 								  log "LOG  says hello to " + name ;
