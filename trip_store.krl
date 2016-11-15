@@ -7,7 +7,11 @@ ruleset trip_store {
 		author "David Taylor"
 		logging on
 		sharing on
-		provides trips, long_trips, short_trips
+		provides trips
+		sharing on
+		provides long_trips
+		sharing on
+		provides short_trips
 	}
 	global {
 		long_trip = 250;
@@ -34,8 +38,11 @@ ruleset trip_store {
 							"mileage": 0,
 							"timestamp": time:now()
 						}
-					}
-			trip = { "mileage": m, "timestamp": time:now()};
+					};
+			trip =	{
+						"mileage": m, 
+						"timestamp": time:now() 
+					};
 		}
 		if not m.isnull() then {
 			send_directive("trip") with
@@ -61,7 +68,7 @@ ruleset trip_store {
 							"mileage": 0,
 							"timestamp": time:now()
 						}
-					}
+					};
 		}
 		
 		if m > long_trip then {
