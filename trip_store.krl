@@ -7,11 +7,10 @@ ruleset trip_store {
 		author "David Taylor"
 		logging on
 		sharing on
-		provides trips
-		provides long_trips
-		provides short_trips
+		provides trips, long_trips, short_trips
 	}
 	global {
+		long_trip = 250;
 		trips = function(){
 			trips = ent:trips;
 			trips
@@ -36,6 +35,7 @@ ruleset trip_store {
 							"timestamp": time:now()
 						}
 					}
+			trip = { "mileage": m, "timestamp": time:now()};
 		}
 		if not m.isnull() then {
 			send_directive("trip") with
@@ -44,13 +44,17 @@ ruleset trip_store {
 		fired {
 			log "trip stored";
 			set ent:trips init if not ent:trips["_0"];
-			set ent:trips[random:uuid()] { "mileage": m, "timestamp": time:now()};
+			set ent:trips[random:uuid()] trip;
+			log "Raising event explicit:found_long_trip with"+trip_processed;
+			raise explicit event 'found_long_trip' 
+				attributes trip;
 		}
 	}
 	rule collect_long_trips {
 		select when explicit found_long_trip
 		pre{
 			m = event:attr("mileage");
+			t = event:attr("mileage");
 			init =	{
 						"_0":
 						{
@@ -59,13 +63,14 @@ ruleset trip_store {
 						}
 					}
 		}
-		if not m.isnull() then {
-			send_directive("longtrip") with
-				length = m;
+		
+		if m > long_trip then {
+			send_directive("long_trip") with
+				status = "Found long trip!";
 		}
 		fired {
 			set ent:long_trips init if not ent:long_trips["_0"].klog("initialize long_trips");
-			set ent:long_trips[random:uuid()] { "mileage": m, "timestamp": time:now()}.klog("added long_trip");
+			set ent:long_trips[random:uuid()] { "mileage": m, "timestamp": t}.klog("added long_trip");
 		}
 	}
 	rule clear_trips {
