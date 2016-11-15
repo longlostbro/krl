@@ -30,13 +30,15 @@ ruleset manage_fleet {
             random_name = "Test_Child_" + math:random(999);
             name = event:attr("name").defaultsTo(random_name);
             children = wrangler:children();
+            child = children{"children"}.filter(function(x){x{"name"} eq name}).head();
+            eci = child{"eci"};
           }
           {
             wrangler:createChild(name);
-            send_directive("Item created") with children = children(["children"]) ;
+            send_directive("Item created") with eci = eci;
           }
           always{
-            log("Item created ");
+            log("Item created with eci "+eci);
           }
   	}
     rule delete_vehicle{
