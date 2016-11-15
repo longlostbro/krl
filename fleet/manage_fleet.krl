@@ -20,7 +20,8 @@ ruleset manage_fleet {
         };
         show_children = function()
         {
-            wrangler:children();
+            children = wrangler:children();
+            children{"children"};
         };
 	}
   
