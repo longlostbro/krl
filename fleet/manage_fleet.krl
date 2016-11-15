@@ -15,9 +15,13 @@ ruleset manage_fleet {
 	global {
         vehicles = function()
         {
-            subs = wrangler:subscriptions(null, "fleet", "vehicle");
+            subs = wrangler:subscriptions();
             subs{"subscriptions"}
         };
+        subs = function() {
+          subs = wrangler:subscriptions(null, "name_space", "Closet");
+          subs{"subscriptions"}
+        }
         show_children = function()
         {
             result = wrangler:children();
@@ -57,36 +61,66 @@ ruleset manage_fleet {
             log "No child named " + name;
         }
     }
-    rule create_item {
-      select when item new_item
-        pre {
-        //provided in Kynetx Event  Console as Attributes (or as params of an API call)
-        name = event:attr("name");
-        owner = event:attr("owner");
-        attributes = {}
-          .put(["name"], name)
-            .put(["owner"], owner)
-            .put(["Prototype_rids"], "b507940x1.prod"); //Installs rule sets b507780x54.prod and b507780x56.prod in the newly created Pico
-        }
-        {
-        // wrangler api event for child creation. meta:eci() provides the eci of this Pico
-            event:send({"cid":meta:eci()}, "wrangler", "child_creation") with attrs = attributes.klog("attributes: ");
-      
-        //send_directives are sent out via API
-        //Output to Kynetx Event Console - Response body
-        //or API call - response body
-            send_directive("Item created") with attributes = "#{attributes}" and name = "#{name}" ;
-        }
-        always{
-      
-        //Not required but does show an example of persistent variable instantiation
-        //This entity variable creates a subscription between the child to parent with "name"
-        //and the meta:eci() which provides the eci of the current rules set (in this case the parent's eci)
-          set ent:subscriptions{"name"} meta:eci();
-         
-        //this shows up in the pico logs
-        log("Create child item for " + child);
-        }
+    rule introduce_myself {
+      select when pico_systems introduction_requested
+      pre {
+        sub_attrs = {
+          "name": event:attr("name"),
+          "name_space": "Closet",
+          "my_role": event:attr("my_role"),
+          "subscriber_role": event:attr("subscriber_role"),
+          "subscriber_eci": event:attr("subscriber_eci")
+        };
       }
+      if ( not sub_attrs{"name"}.isnull()
+        && not sub_attrs{"subscriber_eci"}.isnull()
+         ) then
+      send_directive("subscription_introduction_sent")
+        with options = sub_attrs
+      fired {
+        raise wrangler event 'subscription' attributes sub_attrs;
+        log "subcription introduction made"
+      } else {
+        log "missing required attributes " + sub_attr.encode()
+      }
+            
+    }
+
+    rule approve_subscription {
+        select when pico_systems subscription_approval_requested
+        pre {
+          pending_sub_name = event:attr("sub_name");
+        }
+        if ( not pending_sub_name.isnull()
+           ) then
+           send_directive("subscription_approved")
+             with options = {"pending_sub_name" : pending_sub_name
+                            }
+       fired {
+         raise wrangler event 'pending_subscription_approval'
+               with channel_name = pending_sub_name;
+         log "Approving subscription " + pending_sub_name;
+       } else {
+         log "No subscription name provided"
+       }
+    }
+
+    rule remove_subscription {
+      select when pico_systems subscription_deletion_requested
+      pre {
+        pending_sub_name = event:attr("sub_name");
+      }
+      if ( not pending_sub_name.isnull()
+         ) then
+           send_directive("subscription_approved")
+             with options = {"pending_sub_name" : pending_sub_name }
+     fired {
+       raise wrangler event 'subscription_cancellation'
+             with channel_name = pending_sub_name;
+       log "Approving subscription " + pending_sub_name;
+     } else {
+       log "No subscription name provided"
+     }
+    }
 
 }
