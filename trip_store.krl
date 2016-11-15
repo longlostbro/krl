@@ -12,8 +12,6 @@ ruleset trip_store {
 		provides long_trips
 		sharing on
 		provides short_trips
-		sharing on
-		provides test
 	}
 	global {
 		long_trip = 250;
