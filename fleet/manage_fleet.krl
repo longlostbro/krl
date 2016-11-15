@@ -29,10 +29,11 @@ ruleset manage_fleet {
     	pre{
             random_name = "Test_Child_" + math:random(999);
             name = event:attr("name").defaultsTo(random_name);
+            children = wrangler:children();
           }
           {
             wrangler:createChild(name);
-            send_directive("Item created") with attributes = "#{meta}" and name = "#{name}" and eci = meta:eci() ;
+            send_directive("Item created") with children = children(["children"]) ;
           }
           always{
             log("Item created ");
