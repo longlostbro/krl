@@ -32,43 +32,45 @@ ruleset trip_store {
 		select when explicit processed_trip
 		pre{
 			m = event:attr("mileage");
-			init =	{
-						"_0":
-						{
-							"mileage": 0,
-							"timestamp": time:now()
-						}
-					};
-			trip =	{
-						"mileage": m, 
-						"timestamp": time:now() 
-					};
+			init =	{};
+			id = random:uuid();
+			t = time:now();
+			trip =	
+			{
+				"mileage": m,
+				"timestamp": t
+			};
+			message = 
+			{
+				"id": id,
+				"mileage": m,
+				"timestamp": t
+			}
 		}
 		if not m.isnull() then {
 			send_directive("trip") with
 				length = m;
 		}
 		fired {
-			log "trip stored";
-			set ent:trips init if not ent:trips["_0"];
-			set ent:trips[random:uuid()] trip;
+			set ent:trips init if not ent:trips;
+			set ent:trips{[id]} trip;
 			log "Raising event explicit:found_long_trip with"+trip_processed;
 			raise explicit event 'found_long_trip' 
-				attributes trip;
+				attributes message;
 		}
 	}
 	rule collect_long_trips {
 		select when explicit found_long_trip
 		pre{
 			m = event:attr("mileage");
-			t = event:attr("mileage");
-			init =	{
-						"_0":
-						{
-							"mileage": 0,
-							"timestamp": time:now()
-						}
-					};
+			t = event:attr("timestamp");
+			id = event:attr("id");
+			init =	{};
+			trip =	
+			{
+				"mileage": m, 
+				"timestamp": t 
+			};
 		}
 		
 		if m > long_trip then {
@@ -76,8 +78,8 @@ ruleset trip_store {
 				status = "Found long trip!";
 		}
 		fired {
-			set ent:long_trips init if not ent:long_trips["_0"].klog("initialize long_trips");
-			set ent:long_trips[random:uuid()] { "mileage": m, "timestamp": t}.klog("added long_trip");
+			set ent:long_trips init if not ent:long_trips.klog("initialize long_trips");
+			set ent:long_trips{[id]} trip;
 		}
 	}
 	rule clear_trips {
