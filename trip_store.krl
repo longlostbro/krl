@@ -24,8 +24,8 @@ ruleset trip_store {
 			long_trips
 		};
 		short_trips = function(){
-			long_trips = ent:trips.filter(function(k,v){long_trips[k].isnull()});
-			long_trips
+			short_trips = ent:trips.filter(function(k,v){ent:long_trips[k].isnull()});
+			short_trips
 		};
 	}
 	rule collect_trips {
