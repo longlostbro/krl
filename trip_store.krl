@@ -33,7 +33,7 @@ ruleset trip_store {
 						"_0":
 						{
 							"mileage": 0,
-							"timestamp": time:new("0:00:00")
+							"timestamp": time:now()
 						}
 					}
 		}
@@ -55,7 +55,7 @@ ruleset trip_store {
 						"_0":
 						{
 							"mileage": 0,
-							"timestamp": time:new("0:00:00")
+							"timestamp": time:now()
 						}
 					}
 		}
