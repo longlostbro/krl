@@ -20,8 +20,10 @@ ruleset manage_fleet {
         };
         show_children = function()
         {
-            children = wrangler:children();
-            children{"children"};
+            result = wrangler:children();
+            children = result{"children"};
+            child = children.filter(function(x){x{"name"} eq name}).head();
+            child
         };
 	}
   
