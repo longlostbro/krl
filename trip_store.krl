@@ -7,8 +7,6 @@ ruleset trip_store {
 		author "David Taylor"
 		logging on
 		sharing on
-		provides trips
-		sharing on
 		provides long_trips
 		sharing on
 		provides short_trips
