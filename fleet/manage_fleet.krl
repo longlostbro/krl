@@ -7,7 +7,7 @@ ruleset manage_fleet {
     	author "David Taylor"
     	logging on
         sharing on
-        provides vehicles
+        provides vehicles, show_children
         use module v1_wrangler alias wrangler
 	}
 	global {
