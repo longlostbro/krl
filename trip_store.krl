@@ -12,6 +12,8 @@ ruleset trip_store {
 		provides long_trips
 		sharing on
 		provides short_trips
+		sharing on
+		provides test
 	}
 	global {
 		long_trip = 250;
@@ -24,7 +26,7 @@ ruleset trip_store {
 			long_trips
 		};
 		short_trips = function(){
-			short_trips = ent:trips.filter(function(k,v){ent:long_trips[k].isnull()});
+			short_trips = ent:trips.filter(function(k,v){ent:long_trips{k}.isnull()});
 			short_trips
 		};
 	}
