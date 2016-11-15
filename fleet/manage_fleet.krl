@@ -22,7 +22,7 @@ ruleset manage_fleet {
         {
             result = wrangler:children();
             children = result{"children"};
-            child = children.filter(function(x){x{"name"} eq name}).head();
+            child = children.filter(function(x){x{"name"} eq "Volvo"}).head();
             child
         };
 	}
