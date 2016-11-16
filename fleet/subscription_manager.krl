@@ -90,5 +90,6 @@ ruleset manage_fleet {
        log "No subscription name provided"
      }
     }
+    
 
 }
