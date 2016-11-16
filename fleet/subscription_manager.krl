@@ -43,15 +43,14 @@ ruleset manage_fleet {
     rule autoAccept {
 	  select when wrangler inbound_pending_subscription_added
 	  	pre{
-	    	attributes = event:attrs().klog("subcription :");
+	  		name = meta:name();
+	    	attributes = {"pending_sub_name" : meta:name() };
 	  	}
 	    {
 	    	noop();
 	    }
-	  	always{
-	    	raise wrangler event 'pending_subscription_approval'
-	        	attributes attributes;       
-	        log("auto accepted subcription.");
+	  	always{    
+	        log("auto accepted subcription."+name.encode());
 	  	}
 	}
 

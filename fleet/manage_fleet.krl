@@ -59,15 +59,21 @@ ruleset manage_fleet {
             log "No child named " + name;
         }
     }
-    rule introduce_myself {
-      select when pico_systems introduction_requested
+    rule subscribe {
+      select when explicit subscribe_to_child
       pre {
+          child_name = event:attr("name");
+            result = wrangler:children();
+            children = result{"children"};
+            filterresult = children.filter(function(x){x{"name"} eq name});
+            child = filterresult.head();
+            eci = child{"eci"};
         sub_attrs = {
-          "name": event:attr("name"),
-          "name_space": "Closet",
-          "my_role": event:attr("my_role"),
-          "subscriber_role": event:attr("subscriber_role"),
-          "subscriber_eci": event:attr("subscriber_eci")
+          "name": child_name,
+          "name_space": 'name_space',
+          "my_role": 'fleet',
+          "subscriber_role": 'car',
+          "subscriber_eci": eci
         };
       }
       if ( not sub_attrs{"name"}.isnull()
