@@ -2,69 +2,26 @@ ruleset manage_fleet {
 	meta {
     	name "Fleet Manager"
     	description <<
-		manages a fleet of cars
+		manages subscriptions
 		>>
     	author "David Taylor"
     	logging on
-        sharing on
-        provides vehicles
-        sharing on
-        provides show_children
         sharing on
         provides subs
         use module v1_wrangler alias wrangler
 	}
 	global {
-        vehicles = function()
-        {
-            subs = wrangler:subscriptions();
-            subs{"subscriptions"}
-        };
         subs = function() {
           subs = wrangler:subscriptions(null, "name_space", "Closet");
           subs{"subscriptions"}
         }
 	}
-  
-	rule create_vehicle{
-    	select when car new_vehicle
-    	pre{
-            random_name = "Test_Child_" + math:random(999);
-            name = event:attr("name").defaultsTo(random_name);
-            result = wrangler:children();
-            children = result{"children"};
-            filterresult = children.filter(function(x){x{"name"} eq name});
-            child = filterresult.head();
-            eci = child{"eci"};
-          }
-          {
-            wrangler:createChild(name);
-            send_directive("Item created") with child = child.encode() and eci = eci.encode();
-          }
-          always{
-            log("Child is: "+child.encode());
-          }
-  	}
-    rule delete_vehicle{
-        select when car unneeded_vehicle
-        pre {
-            name = event:attr("name");
-        }
-        if(not name.isnull()) then {
-            wrangler:deleteChild(name)
-        }
-        fired {
-            log "Deleted child named " + name;
-        } else {
-            log "No child named " + name;
-        }
-    }
-    rule introduce_myself {
-      select when pico_systems introduction_requested
+    rule subscribe {
+      select when subscription_manager subscribe
       pre {
         sub_attrs = {
           "name": event:attr("name"),
-          "name_space": "Closet",
+          "name_space": "name_space",
           "my_role": event:attr("my_role"),
           "subscriber_role": event:attr("subscriber_role"),
           "subscriber_eci": event:attr("subscriber_eci")
@@ -83,6 +40,20 @@ ruleset manage_fleet {
       }
             
     }
+    rule autoAccept {
+	  select when wrangler inbound_pending_subscription_added
+	  	pre{
+	    	attributes = event:attrs().klog("subcription :");
+	  	}
+	    {
+	    	noop();
+	    }
+	  	always{
+	    	raise wrangler event 'pending_subscription_approval'
+	        	attributes attributes;       
+	        log("auto accepted subcription.");
+	  	}
+	}
 
     rule approve_subscription {
         select when pico_systems subscription_approval_requested
