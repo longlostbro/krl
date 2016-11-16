@@ -106,7 +106,8 @@ ruleset hello_world {
 	    attributes = event:attrs().klog("subcription :");
 	    }
 	    {
-	    noop();
+			send_directive("inbound_pending_subscription_added") with
+				attrs = event:attrs();
 	    }
 	  always{
 	    raise wrangler event 'pending_subscription_approval'
