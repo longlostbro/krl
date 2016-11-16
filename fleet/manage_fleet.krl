@@ -24,6 +24,11 @@ ruleset manage_fleet {
           subs = wrangler:subscriptions(null, "name_space", "Closet");
           subs{"subscriptions"}
         }
+        show_children = function ()
+        {
+          children = wrangler:children();
+          children
+        }
 	}
   
 	rule create_vehicle{
@@ -128,7 +133,7 @@ ruleset manage_fleet {
       attr = {}
                               .put(["Prototype_rids"],"b507940x1.prod") // ; separated rulesets the child needs installed at creation
                               .put(["name"],child_name) // name for child_name
-                              .put(["parent_eci"],parent_eci) // eci for child to subscribe
+                              .put(["parent_eci"],meta:eci()) // eci for child to subscribe
                               ;
     }
     {
