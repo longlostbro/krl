@@ -131,7 +131,7 @@ ruleset manage_fleet {
     pre{
       child_name = event:attr("name");
       attr = {}
-                              .put(["Prototype_rids"],"b507940x1.prod") // ; separated rulesets the child needs installed at creation
+                              .put(["Prototype_rids"],"b507941x1.prod") // ; separated rulesets the child needs installed at creation
                               .put(["name"],child_name) // name for child_name
                               .put(["parent_eci"],meta:eci()) // eci for child to subscribe
                               ;
