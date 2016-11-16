@@ -63,11 +63,6 @@ ruleset manage_fleet {
       select when explicit subscribe_to_child
       pre {
           child_name = event:attr("name");
-            result = wrangler:children();
-            children = result{"children"};
-            filterresult = children.filter(function(x){x{"name"} eq name});
-            child = filterresult.head();
-            eci = child{"eci"};
         sub_attrs = {
           "name": child_name,
           "name_space": 'name_space',
@@ -126,5 +121,38 @@ ruleset manage_fleet {
        log "No subscription name provided"
      }
     }
+    rule createChild{
+    select when subscriptions parent_child_automate
+    pre{
+      child_name = event:attr("name");
+      attr = {}
+                              .put(["Prototype_rids"],"b507940x1.prod") // ; separated rulesets the child needs installed at creation
+                              .put(["name"],child_name) // name for child_name
+                              .put(["parent_eci"],parent_eci) // eci for child to subscribe
+                              ;
+    }
+    {
+      noop();
+    }
+    always{
+      raise wrangler event "child_creation"
+      attributes attr.klog("attributes: ");
+      log("create child for " + child);
+    }
+  }
+  rule autoAccept {
+  select when wrangler inbound_pending_subscription_added
+  pre{
+    attributes = event:attrs().klog("subcription :");
+    }
+    {
+    noop();
+    }
+  always{
+    raise wrangler event 'pending_subscription_approval'
+        attributes attributes;       
+        log("auto accepted subcription.");
+  }
+}
 
 }
