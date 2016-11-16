@@ -10,6 +10,8 @@ ruleset manage_fleet {
         provides vehicles
         sharing on
         provides show_children
+        sharing on
+        provides subs
         use module v1_wrangler alias wrangler
 	}
 	global {
