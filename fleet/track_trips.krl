@@ -8,10 +8,17 @@ ruleset hello_world {
 		logging on
 		sharing on
 		provides long_trip
+		sharing on
+		provides parent
 		use module  b507199x5 alias wrangler_api
 	}
 	global {
 		long_trip = 500;
+		parent = function()
+		{
+			parent_results = wrangler_api:parent();
+			parent_results
+		}
 	}
 	rule process_trip {
 		select when car new_trip
