@@ -77,6 +77,7 @@ ruleset hello_world {
 	  always {
 	    raise wrangler event "subscription"
 	    attributes attrs;
+	    log "testing123";
 	  }
 	}
 }
