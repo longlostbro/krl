@@ -54,6 +54,19 @@ ruleset hello_world {
 			log "No long trip found";
 		}
 	}
+	rule parent_eci {
+		select when explicit parent_eci
+		pre{
+			parent_results = wrangler_api:parent();
+		}
+		{
+			send_directive("parent") with
+				status = parent_results.encode();
+		}
+	  always {
+		log "parent: "+parent_results;
+	  }
+	}
 	rule childToParent {
 	  select when wrangler init_events
 	  pre {
