@@ -1,6 +1,6 @@
 ruleset manage_fleet {
 	meta {
-    	name "Fleet Manager"
+    	name "Subscription Manager"
     	description <<
 		manages subscriptions
 		>>
