@@ -8,6 +8,7 @@ ruleset hello_world {
 		logging on
 		sharing on
 		provides long_trip
+		use module  b507199x5 alias wrangler_api
 	}
 	global {
 		long_trip = 500;
