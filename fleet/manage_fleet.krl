@@ -34,13 +34,9 @@ ruleset manage_fleet {
 	    pico{"eci"}
 	  };
 	  createChild = defaction(car_name)
-    	{
-    		{
-    			wrangler:createChild(car_name);
-      		send_directive("new_car") 
-        		with name = car_name;
-        }
-    	}
+    {
+			wrangler:createChild(car_name);
+     }
 	}
 	rule create_vehicle{
   	select when car new_vehicle
