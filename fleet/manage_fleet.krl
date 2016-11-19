@@ -27,24 +27,43 @@ ruleset manage_fleet {
     show_children = function ()
     {
       children = wrangler:children();
-      children
+      children{"children"}
     }
+    childECIbyName = function (name) {
+	    pico = wrangler:children().filter(function(child){child{"name"} eq name}).head()
+	    pico{"eci"}
+	  };
 	}
 	rule create_vehicle{
   	select when car new_vehicle
   	pre{
       random_name = "Test_Child_" + math:random(999);
-      name = event:attr("name").defaultsTo(random_name);
+      car_name = event:attr("name").defaultsTo(random_name);
     }
     {
       wrangler:createChild(name);
       send_directive("new_car") 
-        with name = name;
+        with name = car_name;
     }
     always{
-      raise pico_systems event ruleset_install_requested with rid = "b507941x1.prod" and name = name;
+      raise car event install_ruleset with rid = "b507938x2.prod" and car_name = name;
     }
 	}
+  rule installRulesetInChild {
+    select when car install_ruleset
+    pre {
+      rid = event:attr("rid");
+      pico_name = event:attr("car_name");
+    }
+    {
+    wrangler:installRulesets(rid) with
+      name = pico_name;
+    }
+    always
+    {
+      raise explicit event subscribe_to_child with name = pico_name;
+    }
+  }
   rule delete_vehicle{
     select when car unneeded_vehicle
     pre {
@@ -63,16 +82,12 @@ ruleset manage_fleet {
     select when explicit subscribe_to_child
     pre {
       child_name = event:attr("name");
-      result = wrangler:children();
-      children = result{"children"};
-      child = children.filter(function(x){x{"name"} eq child_name}).head();
-      eci = child{"eci"};
       sub_attrs = {
         "name": child_name,
         "name_space": 'name_space',
         "my_role": 'fleet',
         "subscriber_role": 'car',
-        "subscriber_eci": eci
+        "subscriber_eci": childECIbyName(child_name)
       };
     }
     if ( not sub_attrs{"name"}.isnull()
@@ -123,20 +138,5 @@ ruleset manage_fleet {
    } else {
      log "No subscription name provided"
    }
-  }
-  rule installRulesetInChild {
-    select when pico_systems ruleset_install_requested
-    pre {
-      rid = event:attr("rid");
-      pico_name = event:attr("name");
-    }
-    {
-    wrangler:installRulesets(rid) with
-      name = pico_name;
-    }
-    always
-    {
-      raise explicit event subscribe_to_child with name = pico_name;
-    }
   }
 }
