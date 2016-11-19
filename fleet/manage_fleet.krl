@@ -14,8 +14,7 @@ ruleset manage_fleet {
     vehicles = function()
     {
         subs = wrangler:subscriptions(null,"subscriber_role","car");
-        vehicles = subs{"subscriptions"};
-        vehicles
+        subs
     };
     subs = function() {
       subs = wrangler:subscriptions(null, "name_space", "name_space");
