@@ -42,8 +42,6 @@ ruleset manage_fleet {
     }
     {
       wrangler:createChild(car_name);
-      send_directive("new_car") 
-        with name = car_name;
     }
     always{
       raise car event install_ruleset with rid = "b507938x2.prod" and car_name = name;
