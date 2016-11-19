@@ -34,9 +34,7 @@ ruleset manage_fleet {
     {
         cars = vehicles();
         car_sub_search = cars.filter(function(car){ not car{name}.isnull() });
-        car_sub = car_sub_search.head();
-        channel_name = car_sub{'channel_name'};
-        channel_name
+        car_sub_search
     };
     childECIbyName = function (name) {
     	children = show_children();
