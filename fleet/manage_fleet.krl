@@ -34,7 +34,10 @@ ruleset manage_fleet {
     {
         cars = vehicles();
         car_sub_search = cars.filter(function(car){ car.pick("$..subscription_name") eq name });
-        car_sub_search
+        car_sub = car_sub_search.head();
+        car = car_sub{name};
+        channel_name = car{'channel_name'};
+        channel_name
     };
     childECIbyName = function (name) {
     	children = show_children();
