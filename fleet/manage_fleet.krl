@@ -25,6 +25,12 @@ ruleset manage_fleet {
       children = wrangler:children();
       children{"children"}
     }
+    getSubChannelNameByPicoName = function(name)
+    {
+        car_sub = vehicles.filter(function(car){not car{name}.isnull()}).head();
+        channel_name = car_sub{'channel_name'};
+        channel_name
+    };
     childECIbyName = function (name) {
     	children = show_children();
 	    pico = children.filter(function(child){child{"name"} eq name}).head();
