@@ -7,9 +7,9 @@ ruleset track_trips {
 		author "David Taylor"
 		logging on
 		sharing on
-		provides long_trip
+		provides long_trip, subs
 		sharing on
-		provides subs
+    use module v1_wrangler alias wrangler
 	}
 	global {
 		long_trip = 500;
