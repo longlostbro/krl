@@ -70,7 +70,7 @@ ruleset manage_fleet {
     }
     always
     {
-      raise explicit event subscribe_to_child with name = pico_name;
+      log "test"
     }
   }
   rule delete_vehicle{
