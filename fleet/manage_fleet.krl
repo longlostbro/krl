@@ -18,7 +18,7 @@ ruleset manage_fleet {
         vehicles
     };
     subs = function() {
-      subs = wrangler:subscriptions(null, "name_space", "Closet");
+      subs = wrangler:subscriptions(null, "name_space", "name_space");
       subs{"subscriptions"}
     }
     show_children = function ()
