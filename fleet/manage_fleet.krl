@@ -84,12 +84,13 @@ ruleset manage_fleet {
     select when explicit subscribe_to_child
     pre {
       child_name = event:attr("name");
+      child_eci = childECIbyName(child_name);
       sub_attrs = {
         "name": child_name,
         "name_space": 'name_space',
         "my_role": 'fleet',
         "subscriber_role": 'car',
-        "subscriber_eci": childECIbyName(child_name)
+        "subscriber_eci": child_eci
       };
     }
     if ( not sub_attrs{"name"}.isnull()
@@ -99,11 +100,28 @@ ruleset manage_fleet {
       with options = sub_attrs
     fired {
       raise wrangler event 'subscription' attributes sub_attrs;
-      log "subcription introduction made" + sub_attr.encode()
+      log "subcription introduction made" + sub_attr.encode();
     } else {
-      log "missing required attributes " + sub_attr.encode()
+      log "missing required attributes " + sub_attr.encode();
     }
           
+  }
+  rule test {
+  	select when explicit subscribe
+    pre {
+      child_name = event:attr("name");
+      child_eci = childECIbyName(child_name);
+    }
+    {
+	    send_directive("subscribed")
+	      with options = {
+	      		"name": child_name,
+	    			"eci": child_eci
+	    	}
+    }
+    always {
+    	log 'stuff';
+    }
   }
   rule approve_subscription {
       select when pico_systems subscription_approval_requested
