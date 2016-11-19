@@ -86,7 +86,7 @@ ruleset manage_fleet {
         log "No child named " + name;
     }
   }
-  rule subscribe {
+  rule subscribe_to_child {
     select when explicit subscribe_to_child
     pre {
       child_name = event:attr("name");
@@ -102,67 +102,13 @@ ruleset manage_fleet {
     if ( not sub_attrs{"name"}.isnull()
       && not sub_attrs{"subscriber_eci"}.isnull()
        ) then
-    send_directive("subscription_introduction_sent")
+    send_directive("subscribe_to_child")
       with options = sub_attrs
     fired {
-      raise wrangler event 'subscription' attributes sub_attrs;
-      log "subcription introduction made" + sub_attr.encode();
+      raise subscription_manager event 'subscribe' attributes sub_attrs;
+      log "subcribing to child" + sub_attr.encode();
     } else {
       log "missing required attributes " + sub_attr.encode();
     }
-          
-  }
-  rule test {
-  	select when explicit subscribe
-    pre {
-      child_name = event:attr("name");
-      child_eci = childECIbyName(child_name);
-    }
-    {
-	    send_directive("subscribed")
-	      with options = {
-	      		"name": child_name,
-	    			"eci": child_eci
-	    	}
-    }
-    always {
-    	log 'stuff';
-    }
-  }
-  rule approve_subscription {
-      select when pico_systems subscription_approval_requested
-      pre {
-        pending_sub_name = event:attr("sub_name");
-      }
-      if ( not pending_sub_name.isnull()
-         ) then
-         send_directive("subscription_approved")
-           with options = {"pending_sub_name" : pending_sub_name
-                          }
-     fired {
-       raise wrangler event 'pending_subscription_approval'
-             with channel_name = pending_sub_name;
-       log "Approving subscription " + pending_sub_name;
-     } else {
-       log "No subscription name provided"
-     }
-  }
-
-  rule remove_subscription {
-    select when pico_systems subscription_deletion_requested
-    pre {
-      pending_sub_name = event:attr("sub_name");
-    }
-    if ( not pending_sub_name.isnull()
-       ) then
-         send_directive("subscription_approved")
-           with options = {"pending_sub_name" : pending_sub_name }
-   fired {
-     raise wrangler event 'subscription_cancellation'
-           with channel_name = pending_sub_name;
-     log "Approving subscription " + pending_sub_name;
-   } else {
-     log "No subscription name provided"
-   }
   }
 }

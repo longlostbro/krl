@@ -19,13 +19,7 @@ ruleset manage_fleet {
     rule subscribe {
       select when subscription_manager subscribe
       pre {
-        sub_attrs = {
-          "name": event:attr("name"),
-          "name_space": "name_space",
-          "my_role": event:attr("my_role"),
-          "subscriber_role": event:attr("subscriber_role"),
-          "subscriber_eci": event:attr("subscriber_eci")
-        };
+        sub_attrs = event:attrs();
       }
       if ( not sub_attrs{"name"}.isnull()
         && not sub_attrs{"subscriber_eci"}.isnull()
@@ -38,21 +32,7 @@ ruleset manage_fleet {
       } else {
         log "missing required attributes " + sub_attr.encode()
       }
-            
     }
-    rule autoAccept {
-	  select when wrangler inbound_pending_subscription_added
-	  	pre{
-	  		name = meta:name();
-	    	attributes = {"pending_sub_name" : meta:name() };
-	  	}
-	    {
-	    	noop();
-	    }
-	  	always{    
-	        log("auto accepted subcription."+name.encode());
-	  	}
-	}
 
     rule approve_subscription {
         select when pico_systems subscription_approval_requested
@@ -90,6 +70,4 @@ ruleset manage_fleet {
        log "No subscription name provided"
      }
     }
-    
-
 }
