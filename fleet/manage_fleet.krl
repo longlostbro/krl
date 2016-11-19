@@ -25,6 +25,11 @@ ruleset manage_fleet {
       children = wrangler:children();
       children{"children"}
     }
+    test = function()
+    {
+    	test = getSubChannelNameByPicoName("new_vehicle");
+    	test
+    }
     getSubChannelNameByPicoName = function(name)
     {
         car_sub = vehicles.filter(function(car){not car{name}.isnull()}).head();
