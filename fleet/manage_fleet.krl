@@ -29,6 +29,10 @@ ruleset manage_fleet {
 	    pico = wrangler:children().filter(function(child){child{"name"} eq name}).head()
 	    pico{"eci"}
 	  };
+    childECIbyNameObj = function () {
+	    pico = wrangler:children().filter(function(child){child{"name"} eq event:attr('name')}).head()
+	    pico{"eci"}
+	  };
 	  createChild = defaction(car_name)
     {
     	{
