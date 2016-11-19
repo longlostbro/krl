@@ -40,7 +40,7 @@ ruleset manage_fleet {
 	  		send_directive("new_car") 
 	    		with name = car_name;
     	}
-     }
+    };
 	}
 	rule create_vehicle{
   	select when car new_vehicle
