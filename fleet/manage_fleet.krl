@@ -41,7 +41,7 @@ ruleset manage_fleet {
       car_name = event:attr("name").defaultsTo(random_name);
     }
     {
-      wrangler:createChild(name);
+      wrangler:createChild(car_name);
       send_directive("new_car") 
         with name = car_name;
     }
