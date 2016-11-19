@@ -6,7 +6,7 @@ ruleset manage_fleet {
 		  >>
     	author "David Taylor"
     	logging on
-      provides vehicles, show_children, subs, childECIbyNameObj
+      provides vehicles, show_children, subs, childECIbyName
       sharing on
       use module v1_wrangler alias wrangler
 	}
@@ -27,10 +27,6 @@ ruleset manage_fleet {
     }
     childECIbyName = function (name) {
 	    pico = wrangler:children().filter(function(child){child{"name"} eq name}).head()
-	    pico{"eci"}
-	  };
-    childECIbyNameObj = function () {
-	    pico = wrangler:children().filter(function(child){child{"name"} eq event:attr('name')}).head()
 	    pico{"eci"}
 	  };
 	  createChild = defaction(car_name)
