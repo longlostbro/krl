@@ -12,6 +12,33 @@ ruleset manage_fleet {
       sharing on
 	}
 	global {
+		cloud_url = "https://#{meta:host()}/sky/cloud/";
+		cloud = function(eci, mod, func, params) {
+		    response = http:get("#{cloud_url}#{mod}/#{func}", (params || {}).put(["_eci"], eci));
+		 
+		 
+		    status = response{"status_code"};
+		 
+		 
+		    error_info = {
+		        "error": "sky cloud request was unsuccesful.",
+		        "httpStatus": {
+		            "code": status,
+		            "message": response{"status_line"}
+		        }
+		    };
+		 
+		 
+		    response_content = response{"content"}.decode();
+		    response_error = (response_content.typeof() eq "hash" && response_content{"error"}) => response_content{"error"} | 0;
+		    response_error_str = (response_content.typeof() eq "hash" && response_content{"error_str"}) => response_content{"error_str"} | 0;
+		    error = error_info.put({"skyCloudError": response_error, "skyCloudErrorMsg": response_error_str, "skyCloudReturnValue": response_content});
+		    is_bad_response = (response_content.isnull() || response_content eq "null" || response_error || response_error_str);
+		 
+		 
+		    // if HTTP status was OK & the response was not null and there were no errors...
+		    (status eq "200" && not is_bad_response) => response_content | error
+		};
     vehicles = function()
     {
         subs = wrangler:subscriptions(null,"subscriber_role","car");
@@ -59,6 +86,17 @@ ruleset manage_fleet {
 	    		with name = car_name;
     	}
      }
+	}
+	rule generate_reports {
+  	select when explicit report
+     	foreach vehicle_list setting (vehicle)
+       	pre {
+       		vehicle_name = vehicle.pick("$..subscription_name");
+         	vehicle_eci = vehicle.pick("$..subscriber_eci");
+       	}
+       	fired {
+         	raise explicit event tweets_shown on final
+       	}
 	}
 	rule create_vehicle{
   	select when car new_vehicle
