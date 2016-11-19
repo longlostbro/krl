@@ -55,7 +55,7 @@ ruleset manage_fleet {
     	createChild(car_name);
     }
     always{
-      raise car event install_ruleset with rid = "b507938x2.prod" and car_name = name;
+      raise car event install_ruleset with rid = "b507938x2.prod" and car_name = car_name;
     }
 	}
   rule installRulesetInChild {
@@ -70,7 +70,7 @@ ruleset manage_fleet {
     }
     always
     {
-      log "raise explicit event subscribe_to_child with name = "+pico_name;
+      raise explicit event subscribe_to_child with name = pico_name;
     }
   }
   rule delete_vehicle{
