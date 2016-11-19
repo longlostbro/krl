@@ -1,4 +1,4 @@
-ruleset hello_world {
+ruleset track_trips {
 	meta {
 		name "track_trips"
 		description <<
