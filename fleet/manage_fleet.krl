@@ -26,12 +26,14 @@ ruleset manage_fleet {
       children{"children"}
     }
     childECIbyName = function (name) {
-	    pico = show_children.filter(function(child){child{"name"} eq name}).head();
+    	children = show_children();
+	    pico = children.filter(function(child){child{"name"} eq name}).head();
 	    pico{"eci"}
 	  };
     test = function () {
-    	children = show_children;
-    	children
+    	children = show_children();
+	    pico = children.filter(function(child){child{"name"} eq 'test'}).head();
+	    pico
 	  };
 	  createChild = defaction(car_name)
     {
@@ -40,7 +42,7 @@ ruleset manage_fleet {
 	  		send_directive("new_car") 
 	    		with name = car_name;
     	}
-    };
+     }
 	}
 	rule create_vehicle{
   	select when car new_vehicle
