@@ -31,8 +31,7 @@ ruleset manage_fleet {
 	  };
     test = function () {
     	children = show_children;
-	    pico = children.filter(function(child){child{"name"} eq 'test'}).head();
-	    pico
+    	children
 	  };
 	  createChild = defaction(car_name)
     {
