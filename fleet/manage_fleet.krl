@@ -14,11 +14,11 @@ ruleset manage_fleet {
     vehicles = function()
     {
         subs = wrangler:subscriptions(null,"subscriber_role","car");
-        subs
+        subs{"subscriptions"}
     };
     subs = function() {
       subs = wrangler:subscriptions(null, "name_space", "name_space");
-      subs
+      subs{"subscriptions"}
     }
     show_children = function ()
     {
