@@ -97,7 +97,7 @@ ruleset manage_fleet {
         wrangler:deleteChild(name)
     }
     fired {
-        log "Deleted child named " + name;
+        log "Deleted child with channel_name " + channel_name;
         raise subscription_manager event subscription_deletion_requested
         	with sub_name = channel_name
     } else {
