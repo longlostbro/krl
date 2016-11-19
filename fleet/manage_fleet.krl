@@ -6,7 +6,7 @@ ruleset manage_fleet {
 		  >>
     	author "David Taylor"
     	logging on
-      provides vehicles, show_children, subs
+      provides vehicles, show_children, subs, childECIbyNameObj
       sharing on
       use module v1_wrangler alias wrangler
 	}
