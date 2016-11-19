@@ -27,13 +27,14 @@ ruleset manage_fleet {
     }
     test = function()
     {
-    	test = getSubChannelNameByPicoName("new_vehicle");
+    	test = getSubChannelNameByPicoName("volvo");
     	test
     }
     getSubChannelNameByPicoName = function(name)
     {
         cars = vehicles();
-        car_sub = cars.filter(function(car){ not car{name}.isnull() }).head();
+        car_sub_search = cars.filter(function(car){ not car{name}.isnull() });
+        car_sub = car_sub_search.head();
         channel_name = car_sub{'channel_name'};
         channel_name
     };
