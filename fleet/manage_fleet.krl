@@ -91,8 +91,7 @@ ruleset manage_fleet {
     select when car unneeded_vehicle
     pre {
         name = event:attr("name");
-        car_sub = vehicles{name};
-        channel_name = car_sub{'channel_name'};
+        channel_name = getSubChannelNameByPicoName(name);
     }
     if(not name.isnull()) then {
         wrangler:deleteChild(name)
