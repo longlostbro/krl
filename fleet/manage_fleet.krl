@@ -26,13 +26,13 @@ ruleset manage_fleet {
       children{"children"}
     }
     childECIbyName = function (name) {
-    	children = ent:show_children();
+    	children = show_children();
 	    pico = children.filter(function(child){child{"name"} eq name}).head();
 	    pico{"eci"}
 	  };
 
     testChildECIbyName = function () {
-    	children = ent:show_children();
+    	children = show_children();
 	    pico = children.filter(function(child){child{"name"} eq 'new_vehicle'}).head();
 	    pico{"eci"}
 	  };
