@@ -35,7 +35,11 @@ ruleset manage_fleet {
 	  };
 	  createChild = defaction(car_name)
     {
-			wrangler:createChild(car_name);
+    	{
+				wrangler:createChild(car_name);
+	  		send_directive("new_car") 
+	    		with name = car_name;
+    	}
      }
 	}
 	rule create_vehicle{
@@ -45,7 +49,7 @@ ruleset manage_fleet {
       car_name = event:attr("name").defaultsTo(random_name);
     }
     {
-    	createChild();
+    	createChild(car_name);
     }
     always{
       raise car event install_ruleset with rid = "b507938x2.prod" and car_name = name;
