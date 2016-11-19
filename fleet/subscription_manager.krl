@@ -35,7 +35,7 @@ ruleset manage_fleet {
     }
 
     rule approve_subscription {
-        select when pico_systems subscription_approval_requested
+        select when subscription_manager subscription_approval_requested
         pre {
           pending_sub_name = event:attr("sub_name");
         }
@@ -54,7 +54,7 @@ ruleset manage_fleet {
     }
 
     rule remove_subscription {
-      select when pico_systems subscription_deletion_requested
+      select when subscription_manager subscription_deletion_requested
       pre {
         pending_sub_name = event:attr("sub_name");
       }

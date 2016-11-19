@@ -77,12 +77,16 @@ ruleset manage_fleet {
     select when car unneeded_vehicle
     pre {
         name = event:attr("name");
+        car_sub = vehicles{name};
+        channel_name = car_sub{'channel_name'};
     }
     if(not name.isnull()) then {
         wrangler:deleteChild(name)
     }
     fired {
         log "Deleted child named " + name;
+        raise subscription_manager event subscription_deletion_requested
+        	with sub_name = channel_name
     } else {
         log "No child named " + name;
     }
