@@ -33,10 +33,8 @@ ruleset manage_fleet {
     getSubChannelNameByPicoName = function(name)
     {
         cars = vehicles();
-        car_sub_search = cars.filter(function(car){ keys(car).head() eq name });
-        car_sub = car_sub_search.head();
-        channel_name = car_sub{'channel_name'};
-        channel_name
+        car_sub_search = cars.filter(function(car){ car.pick("$..subscription_name") eq name });
+        car_sub_search
     };
     childECIbyName = function (name) {
     	children = show_children();
