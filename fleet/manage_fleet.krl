@@ -26,14 +26,9 @@ ruleset manage_fleet {
       children{"children"}
     }
     childECIbyName = function (name) {
-    	children = show_children();
+    	children = ent:show_children();
 	    pico = children.filter(function(child){child{"name"} eq name}).head();
 	    pico{"eci"}
-	  };
-    test = function () {
-    	children = show_children();
-	    pico = children.filter(function(child){child{"name"} eq 'test'}).head();
-	    pico
 	  };
 	  createChild = defaction(car_name)
     {
