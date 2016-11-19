@@ -6,9 +6,10 @@ ruleset manage_fleet {
 		  >>
     	author "David Taylor"
     	logging on
+      use module v1_wrangler alias wrangler
+      use module b507938x2 alias track_trips
       provides vehicles, show_children, subs, childECIbyName, test
       sharing on
-      use module v1_wrangler alias wrangler
 	}
 	global {
     vehicles = function()
@@ -27,8 +28,8 @@ ruleset manage_fleet {
     }
     test = function()
     {
-    	test = getSubChannelNameByPicoName("volvo");
-    	test
+    	trips = track_trips:trips();
+    	trips
     }
     getSubChannelNameByPicoName = function(name)
     {

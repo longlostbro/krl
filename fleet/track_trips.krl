@@ -2,61 +2,88 @@ ruleset track_trips {
 	meta {
 		name "track_trips"
 		description <<
-			track_trips
+			trip_store
 		>>
 		author "David Taylor"
 		logging on
+		provides trips, long_trips, short_trips
 		sharing on
-		provides long_trip, subs
-		sharing on
-    use module v1_wrangler alias wrangler
 	}
 	global {
-		long_trip = 500;
-	    subs = function() {
-	      subs = wrangler:subscriptions(null, "name_space", "Closet");
-	      subs{"subscriptions"}
-	    }
+		long_trip = 250;
+		trips = function(){
+			trips = ent:trips;
+			trips
+		};
+		long_trips = function(){
+			long_trips = ent:long_trips;
+			long_trips
+		};
+		short_trips = function(){
+			short_trips = ent:trips.filter(function(k,v){ent:long_trips{k}.isnull()});
+			short_trips
+		};
 	}
-	rule process_trip {
-		select when car new_trip
+	rule collect_trips {
+		select when explicit processed_trip
 		pre{
 			m = event:attr("mileage");
-			trip_processed = { 
-				"mileage" : m 
+			init =	{};
+			id = random:uuid();
+			t = time:now();
+			trip =	
+			{
+				"mileage": m,
+				"timestamp": t
 			};
+			message = 
+			{
+				"id": id,
+				"mileage": m,
+				"timestamp": t
+			}
 		}
 		if not m.isnull() then {
-			send_directive("say") with
+			send_directive("trip") with
 				length = m;
 		}
 		fired {
-			raise explicit event 'trip_processed' 
-				attributes trip_processed;
-			log "Raising event explicit:trip_processed with"+trip_processed;
+			set ent:trips init if not ent:trips;
+			set ent:trips{[id]} trip;
+			log "Raising event explicit:found_long_trip with"+trip_processed;
+			raise explicit event 'found_long_trip' 
+				attributes message;
 		}
 	}
-	rule find_long_trips {
-		select when explicit trip_processed
+	rule collect_long_trips {
+		select when explicit found_long_trip
 		pre{
 			m = event:attr("mileage");
-			find_long_trips = {
-				"mileage" : m,
-				"test" : m
+			t = event:attr("timestamp");
+			id = event:attr("id");
+			init =	{};
+			trip =	
+			{
+				"mileage": m, 
+				"timestamp": t 
 			};
 		}
-		klog("event explicit:trip_processed raised");
+		
 		if m > long_trip then {
-			send_directive("say") with
+			send_directive("long_trip") with
 				status = "Found long trip!";
 		}
-		fired{
-			log "Long trip found. Raising event explicit:found_long_trip";
-			raise explicit event 'found_long_trip' 
-				attributes find_long_trips;
+		fired {
+			set ent:long_trips init if not ent:long_trips.klog("initialize long_trips");
+			set ent:long_trips{[id]} trip;
 		}
-		else {
-			log "No long trip found";
+	}
+	rule clear_trips {
+		select when car trip_reset
+		always {
+			log "trips cleared";
+			clear ent:long_trips;
+			clear ent:trips;
 		}
 	}
 	rule autoAccept {
