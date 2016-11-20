@@ -130,13 +130,16 @@ ruleset manage_fleet {
   rule sendOnTrip {
     select when car send_on_trip
     pre {
-      name = event:attr("name");
-      mileage = event:attr("mileage");
+      name = event:attr("name").klog("name:");
+      mileage = event:attr("mileage").klog("mileage:");
       sub_cid = subCid(name).klog("subcid: ");
     }
     {
       event:send({"cid":sub_cid, "mileage":mileage}, "explicit", "processed_trip")
-        with mileage = mileage and cid_key = sub_cid
+        with attrs = {
+          "mileage":mileage
+        }.klog("sending with:") 
+        and cid_key = sub_cid
     }
   }
   rule catch_complete {
