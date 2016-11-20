@@ -27,21 +27,21 @@ ruleset track_trips {
 	rule collect_trips {
 		select when explicit processed_trip
 		pre{
-			m = event:attr("mileage");
+			m = event:attr("mileage").klog("mileage:");
 			init =	{};
-			id = random:uuid();
-			t = time:now();
+			id = random:uuid().klog("randomID:");
+			t = time:now().klog("time:");
 			trip =	
 			{
 				"mileage": m,
 				"timestamp": t
-			};
+			}.klog("Trip:");
 			message = 
 			{
 				"id": id,
 				"mileage": m,
 				"timestamp": t
-			}
+			}.klog("message:");
 		}
 		if not m.isnull() then {
 			send_directive("trip") with
