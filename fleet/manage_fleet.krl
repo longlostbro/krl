@@ -124,9 +124,11 @@ ruleset manage_fleet {
     pre {
       name = event:attr("name");
       mileage = event:attr("mileage");
+      child_eci = childECIbyName(child_name);
     }
-    fired {
-      raise explicit event processed_trip with name = name and mileage = mileage;
+    {
+      event:send({"cid":child_eci}, "explicit", "processed_trip")
+        with name = name and mileage = mileage;
     }
   }
   rule delete_vehicle{
