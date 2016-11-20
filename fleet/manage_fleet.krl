@@ -81,7 +81,9 @@ ruleset manage_fleet {
        	pre {
           vehicle_name = "";
        	}
-        notify("Sample","notify test") with sticky = true and background_color = "#346" and color = "#CC9";
+        always {
+          log "test"
+        }
 	}
   rule test {
     select when car test
