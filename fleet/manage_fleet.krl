@@ -123,9 +123,10 @@ ruleset manage_fleet {
     select when car send_on_trip
     pre {
       name = event:attr("name");
+      mileage = event:attr("mileage");
     }
     fired {
-      raise explicit event processed_trip with name = name;
+      raise explicit event processed_trip with name = name and mileage = mileage;
     }
   }
   rule delete_vehicle{
