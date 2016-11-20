@@ -46,17 +46,12 @@ ruleset manage_fleet {
     subs = function() {
       subs = wrangler:subscriptions(null, "name_space", "name_space");
       subs{"subscriptions"}
-    }
+    };
     show_children = function ()
     {
       children = wrangler:children();
       children{"children"}
-    }
-    test = function()
-    {
-    	trips = track_trips:trips();
-    	trips
-    }
+    };
     getSubChannelNameByPicoName = function(name)
     {
         cars = vehicles();
@@ -78,12 +73,14 @@ ruleset manage_fleet {
 	  		send_directive("new_car") 
 	    		with name = car_name;
     	}
-     }
+    };
 	}
 	rule generate_reports {
-  	select when explicit report
+  	select when car report
+      foreach vehicles setting(vehicle)
        	pre {
-       		vehicle_name = "";
+          vehicle_name = vehicle.pick("$..subscription_name");
+          vehicle_eci = vehicle.pick("$..subscriber_eci");
        	}
        	fired {
          	log "Generating report for: ";
