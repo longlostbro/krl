@@ -82,13 +82,11 @@ ruleset manage_fleet {
 	}
 	rule generate_reports {
   	select when explicit report
-     	foreach vehicles setting (vehicle)
        	pre {
-       		vehicle_name = vehicle.pick("$..subscription_name");
-         	vehicle_eci = vehicle.pick("$..subscriber_eci");
+       		vehicle_name = "";
        	}
        	fired {
-         	log "Generating report for: "+vehicle_eci;
+         	log "Generating report for: ";
        	}
 	}
 	rule create_vehicle{
