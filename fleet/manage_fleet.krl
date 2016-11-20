@@ -135,8 +135,8 @@ ruleset manage_fleet {
       sub_cid = subCid(name).klog("subcid: ");
     }
     {
-      event:send({"cid":sub_cid.encode()}, "explicit", "processed_trip")
-        with mileage = mileage and cid_key = "sub_cid"
+      event:send({"cid":sub_cid}, "explicit", "processed_trip")
+        with mileage = mileage and cid_key = sub_cid
     }
   }
   rule catch_complete {
