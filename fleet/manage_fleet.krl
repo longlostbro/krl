@@ -127,11 +127,7 @@ ruleset manage_fleet {
       child_eci = childECIbyName(child_name);
     }
     {
-      send_directive("send_on_trip")
-        with car = name and mileage = mileage
-    }
-    fired {
-      raise explicit event "processed_trip" for "b507938x2.prod"
+      event:send({"cid":"3EEFB2B0-AF59-11E6-B62F-BF05B45AA3CF"}, "explicit", "processed_trip")
         with mileage = mileage
     }
   }
