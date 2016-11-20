@@ -132,7 +132,7 @@ ruleset manage_fleet {
     pre {
       name = event:attr("name");
       mileage = event:attr("mileage");
-      sub_cid = subCid(name);
+      sub_cid = subCid(name).klog("subcid: ");
     }
     {
       event:send({"cid":sub_cid}, "explicit", "processed_trip")
