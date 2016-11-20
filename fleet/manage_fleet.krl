@@ -127,8 +127,12 @@ ruleset manage_fleet {
       child_eci = childECIbyName(child_name);
     }
     {
-      event:send({"cid":child_eci}, "explicit", "processed_trip")
-        with name = name and mileage = mileage;
+      send_directive("send_on_trip")
+        with car = name and mileage = mileage
+    }
+    fired {
+      raise explicit event "processed_trip"
+        with mileage = mileage
     }
   }
   rule delete_vehicle{
