@@ -136,9 +136,14 @@ ruleset manage_fleet {
     }
     {
       event:send({"cid":sub_cid}, "explicit", "processed_trip")
-        with mileage = mileage
+        with mileage = mileage and cid_key = "sub_cid"
     }
   }
+  rule catch_complete {
+  select when system send_complete
+   foreach event:attr('send_results').pick("$..status") setting (status)
+   notify("Status", "Send status is " + status);
+}
   rule delete_vehicle{
   select when car unneeded_vehicle
   pre {
