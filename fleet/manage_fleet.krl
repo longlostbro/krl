@@ -7,7 +7,6 @@ ruleset manage_fleet {
     	author "David Taylor"
     	logging on
       use module v1_wrangler alias wrangler
-      use module b507938x2 alias track_trips
       provides vehicles, show_children, subs, childECIbyName, test
       sharing on
 	}
@@ -72,12 +71,6 @@ ruleset manage_fleet {
 	    pico = children.filter(function(child){child{"name"} eq name}).head();
 	    pico{"eci"}
 	  };
-
-    testChildECIbyName = function () {
-    	children = show_children();
-	    pico = children.filter(function(child){child{"name"} eq 'new_vehicle'}).head();
-	    pico{"eci"}
-	  };
 	  createChild = defaction(car_name)
     {
     	{
@@ -89,13 +82,13 @@ ruleset manage_fleet {
 	}
 	rule generate_reports {
   	select when explicit report
-     	foreach vehicle_list setting (vehicle)
+     	foreach vehicles setting (vehicle)
        	pre {
        		vehicle_name = vehicle.pick("$..subscription_name");
          	vehicle_eci = vehicle.pick("$..subscriber_eci");
        	}
        	fired {
-         	raise explicit event tweets_shown on final
+         	log cloud(vehicle_eci,'b507938x2',trips,null).encode();
        	}
 	}
 	rule create_vehicle{
