@@ -88,7 +88,7 @@ ruleset manage_fleet {
          	vehicle_eci = vehicle.pick("$..subscriber_eci");
        	}
        	fired {
-         	log cloud(vehicle_eci,'b507938x2',trips,null).encode();
+         	log "Generating report for: "+vehicle_eci;
        	}
 	}
 	rule create_vehicle{
