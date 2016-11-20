@@ -79,12 +79,9 @@ ruleset manage_fleet {
   	select when car report
       foreach vehicles setting(vehicle)
        	pre {
-          vehicle_name = vehicle.pick("$..subscription_name");
-          vehicle_eci = vehicle.pick("$..subscriber_eci");
+          vehicle_name = "";
        	}
-       	fired {
-         	log "Generating report for: ";
-       	}
+        notify("Sample","notify test") with sticky = true and background_color = "#346" and color = "#CC9";
 	}
 	rule create_vehicle{
   	select when car new_vehicle
