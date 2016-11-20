@@ -7,7 +7,7 @@ ruleset manage_fleet {
     	author "David Taylor"
     	logging on
       use module v1_wrangler alias wrangler
-      use module a169x676 alias PDS
+      use module a169x676 alias wrangler_pds
       provides vehicles, show_children, subs, childECIbyName, test
       sharing on
 	}
