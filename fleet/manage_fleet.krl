@@ -131,7 +131,7 @@ ruleset manage_fleet {
         with car = name and mileage = mileage
     }
     fired {
-      raise explicit event "processed_trip"
+      raise explicit event "processed_trip" for "b507938x2.prod"
         with mileage = mileage
     }
   }
