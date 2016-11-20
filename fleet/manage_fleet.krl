@@ -83,6 +83,11 @@ ruleset manage_fleet {
        	}
         notify("Sample","notify test") with sticky = true and background_color = "#346" and color = "#CC9";
 	}
+  rule test {
+    select when car test
+      send_directive("say") with
+        something = "Hello World";
+  }
 	rule create_vehicle{
   	select when car new_vehicle
   	pre{
