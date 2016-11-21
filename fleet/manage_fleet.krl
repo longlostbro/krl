@@ -11,13 +11,6 @@ ruleset manage_fleet {
     sharing on
   }
   global {
-    reportCount = function()
-    {
-      reportObj = ent:report;
-      reportArray = Object.keys(reportObj).klog("keys:");
-      count = reportArray.length();
-      count
-    };
     cloud_url = "https://#{meta:host()}/sky/cloud/";
     report = function()
     {
@@ -104,7 +97,7 @@ ruleset manage_fleet {
           vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
           trips = cloud(vehicle_cid,"b507938x2.prod","trips",null).klog("trips:");
           count = vehicles().length().klog("vehicles:");
-          responded = Object.keys(ent:report).length().klog("responded:");
+          responded = ent:report.keys().length().klog("responded:");
           report = {"vehicles" : count, "responding" : responded, "trips" : trips }.klog("report");
         }
         {
