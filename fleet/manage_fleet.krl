@@ -97,9 +97,9 @@ ruleset manage_fleet {
           vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
           vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
           trips = cloud(vehicle_cid,"b507938x2.prod","trips",null).klog("trips:");
-          count = vehicles().length();
-          responded = ent:report.length();
-          report = {"vehicles" : count, "responding" : responded, "trips" : trips };
+          count = vehicles().length().klog("vehicles:");
+          responded = ent:report.length().klog("responded");
+          report = {"vehicles" : count, "responding" : responded, "trips" : trips }.klog("report");
         }
         {
           noop();
