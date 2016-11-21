@@ -6,7 +6,7 @@ ruleset track_trips {
 		>>
 		author "David Taylor"
 		logging on
-		provides trips, long_trips, short_trips
+		provides trips, long_trips, short_trips, subs
 		sharing on
 	}
 	global {
