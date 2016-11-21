@@ -84,7 +84,7 @@ ruleset track_trips {
 		pre {
 			fleet_cid = event:attr("fleet_cid");
 			trips = trips();
-			my_name = ent:name.klog("my name is :");
+			my_name = ent:name{"picoName"}.klog("my name is :");
 		}
 		{
 			event:send({"cid":fleet_cid}, "explicit", "report_returned")
