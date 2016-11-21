@@ -12,6 +12,7 @@ ruleset manage_fleet {
     sharing on
   }
   global {
+    test = ["test","test1","test2"];
     cloud_url = "https://#{meta:host()}/sky/cloud/";
     cloud = function(eci, mod, func, params) {
       response = http:get("#{cloud_url}#{mod}/#{func}", (params || {}).put(["_eci"], eci));
@@ -86,9 +87,9 @@ ruleset manage_fleet {
   }
   rule generate_reports {
     select when car report
-    foreach vehicles setting(vehicle)
+    foreach test setting(value)
        pre {
-      vehicle_name = "";
+        vehicle_name = value.klog("value:");
        }
     always {
       log "test"
