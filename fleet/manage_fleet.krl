@@ -134,7 +134,7 @@ ruleset manage_fleet {
         }
         always {
           log("setting report for #{vehicle_name}");
-          set ent:report{vehicle_name} report;
+          set ent:report{vehicle_name} report.decode();
           raise explicit event report_processed;
         }
   }
