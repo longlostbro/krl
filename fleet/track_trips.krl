@@ -10,6 +10,11 @@ ruleset track_trips {
 		sharing on
 	}
 	global {
+  vehicles = function()
+  {
+    subs = wrangler:subscriptions(null,"subscriber_role","car");
+    subs{"subscriptions"}
+  };
 		long_trip = 250;
 		trips = function(){
 			trips = ent:trips;
