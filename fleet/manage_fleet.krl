@@ -192,6 +192,15 @@ ruleset manage_fleet {
         raise explicit event request_reports
       }
   }
+
+  rule clear_reports {
+    select when car clear_reports
+    always {
+      log "reports cleared";
+      clear ent:report;
+      clear ent:fleethistory;
+    }
+  }
   rule test {
   select when car test
     send_directive("say") with
