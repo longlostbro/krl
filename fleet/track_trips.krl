@@ -6,15 +6,11 @@ ruleset track_trips {
 		>>
 		author "David Taylor"
 		logging on
+    use module v1_wrangler alias wrangler
 		provides trips, long_trips, short_trips, subs
 		sharing on
 	}
 	global {
-  subs = function()
-  {
-    subs = wrangler:subscriptions(null,"status",null);
-    subs{"subscriptions"}
-  };
 		long_trip = 250;
 		trips = function(){
 			trips = ent:trips;
@@ -87,8 +83,8 @@ ruleset track_trips {
 	rule send_report {
 		select when explicit report_requested
 		pre {
-			entname = wrangler:name().klog("entname:");
-			my_name = entname{"picoName"}.klog("my name is :");
+			wname = wrangler:name().klog("wname:");
+			my_name = wname{"picoName"}.klog("my name is :");
 			fleet_cid = event:attr("fleet_cid").klog("fleet_cid");
 			trips = trips().decode().klog("trips:");
 		}
