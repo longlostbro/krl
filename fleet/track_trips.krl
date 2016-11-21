@@ -83,8 +83,9 @@ ruleset track_trips {
 		select when explicit report_requested
 		pre {
 			fleet_cid = event:attr("fleet_cid");
-			trips = trips();
-			my_name = ent:name{"picoName"}.klog("my name is :");
+			trips = trips().klog("trips:");
+			entname = ent:name;
+			my_name = entname{"picoName"}.klog("my name is :");
 		}
 		{
 			event:send({"cid":fleet_cid}, "explicit", "report_returned")
