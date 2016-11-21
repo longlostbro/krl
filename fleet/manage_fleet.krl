@@ -127,7 +127,7 @@ ruleset manage_fleet {
     select when explicit report_returned
         pre {
           vehicle_name = event:attr("name").klog("name:");
-          report = event:attr("trips").decode().klog("trips:");
+          report = event:attr("trips").klog("trips:");
         }
         {
           noop();
@@ -146,7 +146,7 @@ ruleset manage_fleet {
           responded = ent:report.keys().length().klog("responded:");
           report = ent:report;
           data = ent:fleethistory.defaultsTo({});
-          fleethistory = data{["reports"]}.defaultsTo([]).append(report.decode());
+          fleethistory = data{["reports"]}.defaultsTo([]).append(report);
         }
         if(count <= responded) then
         {
