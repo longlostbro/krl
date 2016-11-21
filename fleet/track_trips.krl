@@ -87,7 +87,7 @@ ruleset track_trips {
 			wname = wrangler:name().klog("wname:");
 			my_name = wname{"picoName"}.klog("my name is :");
 			fleet_cid = event:attr("fleet_cid").klog("fleet_cid: ");
-			my_attrs = { "trips":my_trips, "name":my_name }.klog("attrs:");
+			my_attrs = { "trips":my_trips.decode(), "name":my_name }.klog("attrs:");
 		}
 		{
 			event:send({"cid":fleet_cid}, "explicit", "report_returned")
