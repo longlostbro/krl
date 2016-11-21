@@ -127,7 +127,7 @@ ruleset manage_fleet {
     select when explicit report_returned
         pre {
           vehicle_name = event:attr("name");
-          report = event:attr("trips");
+          report = event:attr("trips").decode();
         }
         {
           noop();
