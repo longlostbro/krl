@@ -127,7 +127,7 @@ ruleset manage_fleet {
     select when explicit report_returned
         pre {
           vehicle_name = event:attr("name");
-          report = event:attr("trips").decode();
+          report = event:attr("trips");
         }
         {
           noop();
@@ -135,7 +135,7 @@ ruleset manage_fleet {
         always {
           log("setting report for #{vehicle_name}");
           set ent:report{vehicle_name} report;
-          raise explicit event report_processed with report_id = report_id;
+          raise explicit event report_processed;
         }
   }
   rule check_report_status {
@@ -146,7 +146,7 @@ ruleset manage_fleet {
           responded = ent:report.keys().length().klog("responded:");
           report = ent:report;
           data = ent:fleethistory.defaultsTo({});
-          fleethistory = data{["reports"]}.defaultsTo([]).append(report);
+          fleethistory = data{["reports"]}.defaultsTo([]).append(report.decode());
         }
         if(count <= responded) then
         {
