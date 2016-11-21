@@ -87,13 +87,15 @@ ruleset manage_fleet {
   }
   rule generate_reports {
     select when car report
-    foreach vehicles() setting(value)
-       pre {
-        vehicle_name = value.klog("value:");
-       }
-    always {
-      log "test"
-    }
+    foreach vehicles() setting(vehicle)
+        pre {
+          vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
+          vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
+          trips = cloud(eci,mod,func,parms).klog("trips:");
+        }
+        always {
+          log "test"
+        }
   }
   rule test {
   select when car test
