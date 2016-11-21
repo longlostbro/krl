@@ -8,11 +8,16 @@ ruleset manage_fleet {
     logging on
     use module v1_wrangler alias wrangler
     use module a169x676 alias wrangler_pds
-    provides vehicles, show_children, subs, childECIbyName, test, report
+    provides vehicles, show_children, subs, childECIbyName, reportCount, report
     sharing on
   }
   global {
-    test = ["test","test1","test2"];
+    reportCount = function()
+    {
+      reportArray = Object.keys(ent:report);
+      count = reportArray.length();
+      count
+    };
     cloud_url = "https://#{meta:host()}/sky/cloud/";
     report = function()
     {
