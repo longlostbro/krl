@@ -12,7 +12,7 @@ ruleset track_trips {
 	global {
   subs = function()
   {
-    subs = wrangler:subscriptions(null,"my_role","car");
+    subs = wrangler:subscriptions();
     subs{"subscriptions"}
   };
 		long_trip = 250;
