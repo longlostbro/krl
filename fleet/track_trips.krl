@@ -13,7 +13,7 @@ ruleset track_trips {
   subs = function()
   {
     subs = wrangler:subscriptions();
-    subs{"subscriptions"}
+    subs
   };
 		long_trip = 250;
 		trips = function(){
