@@ -14,7 +14,8 @@ ruleset manage_fleet {
   global {
     reportCount = function()
     {
-      reportArray = Object.keys(ent:report);
+      reportObj = ent:report;
+      reportArray = Object.keys(reportObj).klog("keys:");
       count = reportArray.length();
       count
     };
