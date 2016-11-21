@@ -94,6 +94,7 @@ ruleset manage_fleet {
     select when explicit generate_report
     foreach vehicles() setting(vehicle)
         pre {
+          init = {};
           vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
           vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
           trips = cloud(vehicle_cid,"b507938x2.prod","trips",null).klog("trips:");
@@ -106,16 +107,18 @@ ruleset manage_fleet {
         }
         always {
           log("setting report for #{vehicle_name}");
+          set ent:trips init if not ent:trips;
           set ent:report{vehicle_name} report;
         }
   }
   rule begin_report {
     select when car report
       pre{
+          init = {};
       }
       fired {
         log "clearing before generating report";
-        set ent:report "";
+        set ent:report init;
         raise explicit event generate_report
       }
   }
