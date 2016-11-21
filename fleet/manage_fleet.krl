@@ -122,7 +122,17 @@ ruleset manage_fleet {
           set ent:report{vehicle_name} report;
         }
   }
-
+  rule function_report {
+    select when explicit report
+      pre{
+          init = {};
+      }
+      fired {
+        log "clearing before generating report";
+        set ent:report init;
+        raise explicit event generate_report
+      }
+  }
   rule collect_reports {
     select when explicit report_returned
         pre {
