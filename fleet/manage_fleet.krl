@@ -7,7 +7,7 @@ ruleset manage_fleet {
     author "David Taylor"
     logging on
     use module v1_wrangler alias wrangler
-    provides vehicles, show_children, subs, childECIbyName, reportCount, report, fleethistory
+    provides vehicles, show_children, subs, childECIbyName, reportCount, report, fleethistory, reportFunction
     sharing on
   }
   global {
