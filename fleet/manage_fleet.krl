@@ -91,7 +91,7 @@ ruleset manage_fleet {
         pre {
           vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
           vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
-          trips = cloud(eci,mod,func,parms).klog("trips:");
+          trips = cloud(vehicle_cid,"b507938x2.prod","trips",null).klog("trips:");
         }
         always {
           log "test"
