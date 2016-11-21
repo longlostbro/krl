@@ -127,7 +127,7 @@ ruleset manage_fleet {
     select when explicit report_returned
         pre {
           vehicle_name = event:attr("name").klog("name:");
-          report = event:attr("trips").klog("trips:");
+          report = event:attr("trips").decode().klog("trips:");
         }
         {
           noop();
