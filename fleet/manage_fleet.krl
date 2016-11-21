@@ -85,17 +85,34 @@ ruleset manage_fleet {
     }
   };
   }
-  rule generate_reports {
-    select when car report
+  rule generate_report {
+    select when explicit generate_report
     foreach vehicles() setting(vehicle)
         pre {
           vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
           vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
           trips = cloud(vehicle_cid,"b507938x2.prod","trips",null).klog("trips:");
+          count = vehicles().length();
+          responded = ent:report.length();
+          report = {"vehicles" : count, "responding" : responded, "trips" : trips };
+        }
+        {
+          noop();
         }
         always {
-          log "test"
+          log("setting report for #{vehicle_name}");
+          set ent:report{vehicle_name} report;
         }
+  }
+  rule begin_report {
+    select when car report
+      pre{
+      }
+      fired {
+        log "clearing before generating report";
+        set ent:report "";
+        raise explicit event generate_report
+      }
   }
   rule test {
   select when car test
