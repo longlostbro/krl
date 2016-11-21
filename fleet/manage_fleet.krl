@@ -8,7 +8,7 @@ ruleset manage_fleet {
     logging on
     use module v1_wrangler alias wrangler
     use module a169x676 alias wrangler_pds
-    provides vehicles, show_children, subs, childECIbyName, test
+    provides vehicles, show_children, subs, childECIbyName, test, report
     sharing on
   }
   global {
