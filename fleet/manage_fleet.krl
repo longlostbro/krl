@@ -14,6 +14,11 @@ ruleset manage_fleet {
   global {
     test = ["test","test1","test2"];
     cloud_url = "https://#{meta:host()}/sky/cloud/";
+    report = function()
+    {
+      report = ent:report;
+      report
+    }
     cloud = function(eci, mod, func, params) {
       response = http:get("#{cloud_url}#{mod}/#{func}", (params || {}).put(["_eci"], eci));
      
