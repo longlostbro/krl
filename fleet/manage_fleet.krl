@@ -12,6 +12,10 @@ ruleset manage_fleet {
   }
   global {
     cloud_url = "https://#{meta:host()}/sky/cloud/";
+    reportFunction = function()
+    {
+      event:send({"cid":meta:eci()}, "explicit", "report");
+    }
     report = function()
     {
       report = ent:report.defaultsTo({});
