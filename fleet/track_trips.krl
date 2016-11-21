@@ -10,7 +10,7 @@ ruleset track_trips {
 		sharing on
 	}
 	global {
-  vehicles = function()
+  subs = function()
   {
     subs = wrangler:subscriptions(null,"subscriber_role","car");
     subs{"subscriptions"}
