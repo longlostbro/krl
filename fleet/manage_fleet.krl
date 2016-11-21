@@ -146,7 +146,7 @@ ruleset manage_fleet {
           responded = ent:report.keys().length().klog("responded:");
           report = ent:report;
           data = ent:fleethistory.defaultsTo({});
-          fleethistory = data{["reports"]}.defaultsTo([]).append(report);
+          fleethistory = data{"reports"}.defaultsTo([]).append(report);
         }
         if(count <= responded) then
         {
