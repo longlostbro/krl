@@ -154,7 +154,7 @@ ruleset manage_fleet {
         }
         fired {
           log("report done");
-          set ent:fleethistory fleethistory;
+          set ent:fleethistory{"reports"} fleethistory;
         }
         else
         {
