@@ -87,7 +87,7 @@ ruleset manage_fleet {
   }
   rule generate_reports {
     select when car report
-    foreach test setting(value)
+    foreach vehicles() setting(value)
        pre {
         vehicle_name = value.klog("value:");
        }
