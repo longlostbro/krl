@@ -83,7 +83,7 @@ ruleset track_trips {
 		select when explicit report_requested
 		pre {
 			fleet_cid = event:attr("fleet_cid").klog("fleet_cid");
-			trips = trips().klog("trips:");
+			trips = trips().encode().klog("trips:");
 			entname = ent:name.klog("entname:");
 			my_name = entname{"picoName"}.klog("my name is :");
 		}
