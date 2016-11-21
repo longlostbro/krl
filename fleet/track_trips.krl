@@ -83,18 +83,16 @@ ruleset track_trips {
 	rule send_report {
 		select when explicit report_requested
 		pre {
+			my_trips = trips().klog("trips:");
 			wname = wrangler:name().klog("wname:");
 			my_name = wname{"picoName"}.klog("my name is :");
-			fleet_cid = event:attr("fleet_cid").klog("fleet_cid");
-			my_trips = trips()
+			fleet_cid = event:attr("fleet_cid").klog("fleet_cid: ");
+			my_attrs = { "trips":my_trips, "name":my_name }.klog("attrs:");
 		}
 		{
 			event:send({"cid":fleet_cid}, "explicit", "report_returned")
-            with attrs = {
-              "trips":my_trips,
-              "name":my_name
-            }.klog("sending with:") 
-            and cid_key = fleet_cid
+            with attrs = my_attrs.klog("sending with:") 
+            and cid_key = fleet_cid;
 		}
 		always {
 			log "trips cleared";
