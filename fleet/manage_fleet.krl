@@ -171,11 +171,11 @@ ruleset manage_fleet {
           fleet_cid = vehicle.pick("$..inbound_eci").klog("fleet_cid:");
         }
         {
-          event:send({"cid":sub_cid}, "explicit", "report_requested")
+          event:send({"cid":vehicle_cid}, "explicit", "report_requested")
             with attrs = {
               "fleet_cid":fleet_cid
             }.klog("sending with:") 
-            and cid_key = sub_cid
+            and cid_key = vehicle_cid
             }
         always {
           log("requesting report for #{vehicle_name}");
