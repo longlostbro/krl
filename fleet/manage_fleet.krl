@@ -7,15 +7,20 @@ ruleset manage_fleet {
     author "David Taylor"
     logging on
     use module v1_wrangler alias wrangler
-    provides vehicles, show_children, subs, childECIbyName, reportCount, report
+    provides vehicles, show_children, subs, childECIbyName, reportCount, report, fleethistory
     sharing on
   }
   global {
     cloud_url = "https://#{meta:host()}/sky/cloud/";
     report = function()
     {
-      report = ent:report;
+      report = ent:report.defaultsTo({});
       report
+    }
+    fleethistory = function()
+    {
+        fleetreports = ent:fleethistory.defaultsTo({});
+        fleetreports
     }
     cloud = function(eci, mod, func, params) {
       response = http:get("#{cloud_url}#{mod}/#{func}", (params || {}).put(["_eci"], eci));
@@ -79,6 +84,14 @@ ruleset manage_fleet {
     outbound_eci = car{'outbound_eci'};
     outbound_eci
   };
+  subInboundCid = function (name) {
+    cars = vehicles();
+    car_sub_search = cars.filter(function(car){ car.pick("$..subscription_name") eq name });
+    car_sub = car_sub_search.head();
+    car = car_sub{name};
+    outbound_eci = car{'inbound_eci'};
+    outbound_eci
+  };
     createChild = defaction(car_name)
   {
     {
@@ -109,6 +122,65 @@ ruleset manage_fleet {
           set ent:report{vehicle_name} report;
         }
   }
+
+  rule collect_reports {
+    select when explicit report_returned
+        pre {
+          vehicle_name = event:attr("name");
+          report = event:attr("trips");
+        }
+        {
+          noop();
+        }
+        always {
+          log("setting report for #{vehicle_name}");
+          set ent:report{vehicle_name} report;
+          raise explicit event report_processed with report_id = report_id;
+        }
+  }
+  rule check_report_status {
+    select when explicit report_processed
+      pre {
+        init = {};
+          count = vehicles().length().klog("vehicles:");
+          responded = ent:report.keys().length().klog("responded:");
+          report = ent:report;
+          data = ent:fleethistory.defaultsTo({});
+          fleethistory = data{["reports"]}.defaultsTo([]).append(report);
+        }
+        if(count <= responded) then
+        {
+          noop();
+        }
+        fired {
+          log("report done");
+          set ent:fleethistory fleethistory;
+        }
+        else
+        {
+          log "not all have arrived yet"
+        }
+  }
+  rule request_reports {
+    select when explicit request_reports
+    foreach vehicles() setting(vehicle)
+        pre {
+          init = {};
+          vehicle_name = vehicle.pick("$..subscription_name").klog("vehicle_name:");
+          vehicle_cid = vehicle.pick("$..outbound_eci").klog("vehicle_cid:");
+          fleet_cid = vehicle.pick("$..inbound_eci").klog("fleet_cid:");
+        }
+        {
+          event:send({"cid":sub_cid}, "explicit", "report_requested")
+            with attrs = {
+              "fleet_cid":fleet_cid
+            }.klog("sending with:") 
+            and cid_key = sub_cid
+            }
+        always {
+          log("requesting report for #{vehicle_name}");
+        }
+  }
   rule begin_report {
     select when car report
       pre{
@@ -117,7 +189,7 @@ ruleset manage_fleet {
       fired {
         log "clearing before generating report";
         set ent:report init;
-        raise explicit event generate_report
+        raise explicit event request_reports
       }
   }
   rule test {

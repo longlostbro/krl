@@ -78,6 +78,26 @@ ruleset track_trips {
 			set ent:long_trips{[id]} trip;
 		}
 	}
+
+	rule send_report {
+		select when explicit report_requested
+		pre {
+			fleet_cid = event:attr("fleet_cid");
+			trips = trips();
+			my_name = ent:name.klog("my name is :");
+		}
+		{
+			event:send({"cid":fleet_cid}, "explicit", "report_returned")
+            with attrs = {
+              "trips":trips,
+              "name":my_name
+            }.klog("sending with:") 
+            and cid_key = fleet_cid
+		}
+		always {
+			log "trips cleared";
+		}
+	}
 	rule clear_trips {
 		select when car trip_reset
 		always {
